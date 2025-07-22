@@ -1,0 +1,131 @@
+# 此工作流是为了构建一个immortalwrt固件的安装器 格式为iso 可用于所有的虚拟机 和 物理机
+# 所谓安装器就是用来安装用的 iso引导的是一个启动速度极快的debian live系统 跑码后输入命令 ddd 即可调出安装菜单
+# 安装时 若是多张硬盘 你可以选择 需要安装的硬盘 此类方法安装的openwrt 安装后是有剩余空间的 更多信息请参考 wukongdaily/img-installer 项目
+# 几乎所有linux 都有各自的安装器 唯独openwrt和armbian 没有 希望此工作流 弥补这个遗憾 让你更优雅的 安装openwrt 
+
+name: Auto Build ImmortalWrt and Build Custom Installer ISO
+
+on:
+  workflow_dispatch:
+    inputs:
+      profile:
+        description: '请输入要编译固件大小 单位(MB)'
+        required: true
+        default: '1024'
+      include_docker:
+        description: "是否编译 Docker 插件"
+        required: true
+        default: 'yes'
+        type: choice
+        options:
+          - 'yes'
+          - 'no'
+      enable_pppoe:
+        description: "是否配置PPPoE拨号信息?"
+        required: true
+        default: 'no'
+        type: choice
+        options:
+          - 'yes'
+          - 'no'
+      pppoe_account:
+        description: "宽带账号 (若启用PPPoE)"
+        required: false
+      pppoe_password:
+        description: "宽带密码 (若启用PPPoE)"
+        required: false
+
+jobs:
+  build_immortalwrt:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set executable permissions
+        run: chmod +x ${{ github.workspace }}/x86-64/build.sh
+
+      - name: Validate PPPoE Inputs
+        run: |
+          if [[ "${{ github.event.inputs.enable_pppoe }}" == "yes" ]]; then
+            if [[ -z "${{ github.event.inputs.pppoe_account }}" || -z "${{ github.event.inputs.pppoe_password }}" ]]; then
+              echo "Error: PPPoE account and password must be provided when PPPoE is enabled!"
+              exit 1
+            fi
+          fi
+
+      - name: Build ImmortalWrt-x86-64-efi
+        run: |
+          profiles="${{ github.event.inputs.profile }}"
+          include_docker="${{ github.event.inputs.include_docker }}"
+          IFS=',' read -r -a profile_array <<< "$profiles"
+          
+          for profile in "${profile_array[@]}"; do
+            echo "Building for profile: $profile"
+            docker run --rm -i \
+              --user root \
+              -v "${{ github.workspace }}/bin:/home/build/immortalwrt/bin" \
+              -v "${{ github.workspace }}/files:/home/build/immortalwrt/files" \
+              -v "${{ github.workspace }}/x86-64/imm.config:/home/build/immortalwrt/.config" \
+              -v "${{ github.workspace }}/shell:/home/build/immortalwrt/shell" \
+              -v "${{ github.workspace }}/x86-64/24.10/build.sh:/home/build/immortalwrt/build.sh" \
+              -e PROFILE=$profile \
+              -e INCLUDE_DOCKER=$include_docker \
+              -e ENABLE_PPPOE=${{ inputs.enable_pppoe }} \
+              -e PPPOE_ACCOUNT=${{ inputs.pppoe_account }} \
+              -e PPPOE_PASSWORD=${{ inputs.pppoe_password }} \
+              immortalwrt/imagebuilder:x86-64-openwrt-24.10.2 /bin/bash /home/build/immortalwrt/build.sh
+          done
+
+      - name: Generate Firmware SHA-256
+        run: |
+          cp ${{ github.workspace }}/bin/targets/x86/64/*squashfs-combined-efi.img.gz ${{ github.workspace }}
+          for file in *squashfs-combined-efi.img.gz; do
+            sha256sum "$file" > "$file.sha256"
+            sha256sum -c "$file.sha256"
+          done
+
+      - name: Upload Firmware as artifact (for ISO generation)
+        uses: actions/upload-artifact@v4
+        with:
+          name: firmware-img
+          path: |
+            *.img.gz
+            *.sha256
+
+  build_installer_image:
+    runs-on: ubuntu-22.04
+    needs: build_immortalwrt
+
+    steps:
+      - name: Download firmware artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: firmware-img
+
+      - name: Checkout second project repository
+        run: |
+          git clone https://github.com/wkccd/img-installer.git
+          cd img-installer
+
+      - name: Set executable permissions for scripts
+        run: |
+          chmod +x "${{ github.workspace }}/img-installer/custom.sh"
+          chmod +x "${{ github.workspace }}/img-installer/supportFiles/custom/build.sh"
+
+      - name: Build ISO Installer
+        run: |
+          echo "========="
+          firmware_file=$(ls *squashfs-combined-efi.img.gz)
+          cd img-installer
+          bash custom.sh "../$firmware_file"
+
+      - name: Upload ISO to Release
+        uses: softprops/action-gh-release@v2.2.1
+        with:
+          tag_name: "Custom-Installer-x86_64-ISO"
+          body_path: "${{ github.workspace }}/img-installer/supportFiles/custom/info.md"
+          files: |
+            img-installer/output/custom-installer-x86_64.iso
+          token: "${{ secrets.GITHUB_TOKEN }}"

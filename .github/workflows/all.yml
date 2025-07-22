@@ -119,7 +119,7 @@ jobs:
           echo "========="
           firmware_file=$(ls *squashfs-combined-efi.img.gz)
           cd img-installer
-          bash custom.sh "../$firmware_file"
+          bash test.sh "../$firmware_file"
 
       - name: Upload ISO to Release
         uses: softprops/action-gh-release@v2.2.1

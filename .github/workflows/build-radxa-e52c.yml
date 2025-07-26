@@ -73,16 +73,15 @@ jobs:
               immortalwrt/imagebuilder:armsr-armv8-openwrt-24.10.2 /bin/bash /home/build/immortalwrt/build.sh
           done
       
-      - name: 检查rootfs是否存在
+      - name: 列出所有armsr-armv8固件
         run: ls -lh ${{ github.workspace }}/bin/targets/armsr/armv8/
 
-      - name: 查找rootfs.tar.gz所在路径
+      - name: 查找squashfs-rootfs.img.gz所在路径
         id: find_rootfs
         run: |
-          ROOTFS_FILE=$(find bin/targets/armsr/armv8/ -type f -name "*rootfs.tar.gz" | head -n1)
+          ROOTFS_FILE=$(find bin/targets/armsr/armv8/ -type f -name "*squashfs-rootfs.img.gz" | head -n1)
           echo "✅ Found: $ROOTFS_FILE"
           if [ ! -f "$ROOTFS_FILE" ]; then
-            echo "❌ 找不到 rootfs.tar.gz 文件"
             exit 1
           fi
           echo "file=$ROOTFS_FILE" >> $GITHUB_OUTPUT
@@ -111,10 +110,11 @@ jobs:
       - name: Upload firmware to GitHub Releases
         uses: softprops/action-gh-release@v2.2.1
         with:
-          tag_name: phicomm-n1
-          name: ImmortalWrt for Phicomm N1
+          tag_name: raxda
+          name: ImmortalWrt for raxda
           body_path: ${{ github.workspace }}/n1/info.md
           files: |
             ${{ env.PACKAGED_OUTPUTPATH }}/*.img.gz
+            ${{ github.workspace }}/bin/targets/armsr/armv8/*squashfs-rootfs.img.gz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

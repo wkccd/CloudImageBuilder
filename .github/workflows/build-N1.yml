@@ -102,7 +102,8 @@ jobs:
         env:
           OPENWRT_ARMVIRT: ${{ steps.find_rootfs.outputs.file }}
           PACKAGE_SOC: s905d
-          KERNEL_VERSION_NAME: ${{ inputs.openwrt_kernel }}
+          KERNEL_VERSION_NAME: 6.1.146
+          KERNEL_AUTO_LATEST: false
           WHOAMI: "wukongdaily"
 
       - name: Rename .img.gz file

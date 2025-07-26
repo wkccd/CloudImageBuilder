@@ -44,51 +44,18 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-
-      - name: Set executable permissions
-        run: chmod +x ${{ github.workspace }}/n1/build.sh
-
-      - name: Debug workspace contents
-        run: ls -R
-
-      - name: Copy banner
-        run: |
-          cp n1/99-banner.sh files/etc/uci-defaults/
       
-      
-      - name: Building N1 ImmortalWrt
+      - name: 保存rootfs.tar.gz
         run: |
-          profiles="generic"
-          include_docker="${{ github.event.inputs.include_docker }}"
-          rootfs_partsize="${{ github.event.inputs.rootfs_partsize }}"
-          
-          IFS=',' read -r -a profile_array <<< "$profiles"
-          
-          for profile in "${profile_array[@]}"; do
-            echo "Building for profile: $profile"
-            
-            docker run --rm -i \
-              --user root \
-              -v "${{ github.workspace }}/bin:/home/build/immortalwrt/bin" \
-              -v "${{ github.workspace }}/files/etc/uci-defaults:/home/build/immortalwrt/files/etc/uci-defaults" \
-              -v "${{ github.workspace }}/arch/arch.conf:/home/build/immortalwrt/files/etc/opkg/arch.conf" \
-              -v "${{ github.workspace }}/shell:/home/build/immortalwrt/shell" \
-              -v "${{ github.workspace }}/n1/banner:/home/build/immortalwrt/files/mnt/banner" \
-              -v "${{ github.workspace }}/n1/imm.config:/home/build/immortalwrt/.config" \
-              -v "${{ github.workspace }}/n1/build.sh:/home/build/immortalwrt/build.sh" \
-              -e PROFILE=$profile \
-              -e INCLUDE_DOCKER=$include_docker \
-              -e ROOTFS_PARTSIZE=$rootfs_partsize \
-              immortalwrt/imagebuilder:armsr-armv8-openwrt-24.10.2 /bin/bash /home/build/immortalwrt/build.sh
-          done
+          wget https://github.com/wkccd/CloudImageBuilder/releases/download/phicomm-n1/immortalwrt-24.10.2-armsr-armv8-generic-rootfs.tar.gz
       
       - name: 检查rootfs是否存在
-        run: ls -lh ${{ github.workspace }}/bin/targets/armsr/armv8/
+        run: ls -lh ${{ github.workspace }}
 
       - name: 查找rootfs.tar.gz所在路径
         id: find_rootfs
         run: |
-          ROOTFS_FILE=$(find bin/targets/armsr/armv8/ -type f -name "*rootfs.tar.gz" | head -n1)
+          ROOTFS_FILE=$(find ${{ github.workspace }} -type f -name "*rootfs.tar.gz" | head -n1)
           echo "✅ Found: $ROOTFS_FILE"
           if [ ! -f "$ROOTFS_FILE" ]; then
             echo "❌ 找不到 rootfs.tar.gz 文件"
@@ -125,6 +92,5 @@ jobs:
           body_path: ${{ github.workspace }}/n1/info.md
           files: |
             ${{ env.PACKAGED_OUTPUTPATH }}/*.img.gz
-            ${{ github.workspace }}/bin/targets/armsr/armv8/*rootfs.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

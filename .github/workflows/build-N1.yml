@@ -22,7 +22,7 @@ on:
       openwrt_kernel:
         description: "选择构建的内核"
         required: false
-        default: "6.1.y"
+        default: "6.1.y_6.12.y"
         type: choice
         options:
           - 5.4.y
@@ -31,6 +31,11 @@ on:
           - 6.1.y
           - 6.6.y
           - 6.12.y
+          - 5.4.y_5.10.y
+          - 5.15.y_6.1.y
+          - 6.1.y_6.12.y
+          - 6.1.y_6.6.y
+          - 6.6.y_6.12.y
 
 jobs:
   build:
@@ -107,7 +112,7 @@ jobs:
           PACKAGE_SOC: s905d
           KERNEL_REPO_URL: ophub/kernel
           KERNEL_VERSION_NAME: ${{ inputs.openwrt_kernel }}
-          KERNEL_AUTO_LATEST: false
+          KERNEL_AUTO_LATEST: true
           WHOAMI: "wukongdaily"
 
       - name: Rename .img.gz file

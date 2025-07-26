@@ -70,7 +70,7 @@ jobs:
           OPENWRT_ARMVIRT: immortalwrt-24.10.2-armsr-armv8-generic-rootfs.tar.gz
           PACKAGE_SOC: s905d
           KERNEL_VERSION_NAME: ${{ github.event.inputs.openwrt_kernel }}
-          KERNEL_AUTO_LATEST: false
+          KERNEL_AUTO_LATEST: true
           WHOAMI: "wukongdaily"
 
       - name: Rename .img.gz file

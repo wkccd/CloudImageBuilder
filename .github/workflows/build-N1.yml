@@ -97,12 +97,12 @@ jobs:
           echo "file=$ROOTFS_FILE" >> $GITHUB_OUTPUT
 
       - name: Package armsr-armv8 as ImmortalWrt for N1
-        uses: unifreq/openwrt_packit@master
+        uses: wkccd/flippy-openwrt-actions@main
         if: ${{ steps.down.outputs.status }} == 'success' && !cancelled()
         env:
           OPENWRT_ARMVIRT: ${{ steps.find_rootfs.outputs.file }}
           PACKAGE_SOC: s905d
-          KERNEL_VERSION_NAME: 6.1.146
+          KERNEL_VERSION_NAME: ${{ github.event.inputs.openwrt_kernel }}
           KERNEL_AUTO_LATEST: false
           WHOAMI: "wukongdaily"
 

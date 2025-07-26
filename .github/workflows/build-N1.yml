@@ -47,7 +47,7 @@ jobs:
       
       - name: 保存rootfs.tar.gz
         run: |
-          wget https://github.com/wkccd/CloudImageBuilder/releases/download/phicomm-n1/immortalwrt-24.10.2-armsr-armv8-generic-rootfs.tar.gz
+          wget https://github.com/wkccd/CloudImageBuilder/releases/download/phicomm-n1/immortalwrt-24.10.2-armsr-armv8-generic-rootfs.tar.gz -O immortalwrt-24.10.2-armsr-armv8-generic-rootfs.tar.gz
       
       - name: 检查rootfs是否存在
         run: ls -lh ${{ github.workspace }}
@@ -67,7 +67,7 @@ jobs:
         uses: wkccd/flippy-openwrt-actions@main
         if: ${{ steps.down.outputs.status }} == 'success' && !cancelled()
         env:
-          OPENWRT_ARMVIRT: ${{ steps.find_rootfs.outputs.file }}
+          OPENWRT_ARMVIRT: immortalwrt-24.10.2-armsr-armv8-generic-rootfs.tar.gz
           PACKAGE_SOC: s905d
           KERNEL_VERSION_NAME: ${{ github.event.inputs.openwrt_kernel }}
           KERNEL_AUTO_LATEST: false

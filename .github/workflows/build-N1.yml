@@ -97,22 +97,14 @@ jobs:
           echo "file=$ROOTFS_FILE" >> $GITHUB_OUTPUT
 
       - name: Package armsr-armv8 as ImmortalWrt for N1
-        #uses: ophub/amlogic-s9xxx-openwrt@main
-        #with:
-          #openwrt_path: ${{ steps.find_rootfs.outputs.file }}
-          #openwrt_board: s905d
-          #openwrt_size: "256/${{ github.event.inputs.rootfs_partsize }}"
-          #openwrt_kernel: ${{ inputs.openwrt_kernel }}
-          #builder_name: "wukongdaily"
-          #auto_kernel: true
-        uses: wkccd/flippy-openwrt-actions@dev
+        uses: ophub/flippy-openwrt-actions@main
         if: ${{ steps.down.outputs.status }} == 'success' && !cancelled()
         env:
           OPENWRT_ARMSR: ${{ steps.find_rootfs.outputs.file }}
           PACKAGE_SOC: s905d
-          KERNEL_REPO_URL: breakingbadboy/OpenWrt
+          KERNEL_REPO_URL: unifreq/openwrt_packit
           KERNEL_VERSION_NAME: ${{ inputs.openwrt_kernel }}
-          KERNEL_AUTO_LATEST: true
+          KERNEL_AUTO_LATEST: false
           WHOAMI: "wukongdaily"
 
       - name: Rename .img.gz file

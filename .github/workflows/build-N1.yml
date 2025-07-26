@@ -97,14 +97,12 @@ jobs:
           echo "file=$ROOTFS_FILE" >> $GITHUB_OUTPUT
 
       - name: Package armsr-armv8 as ImmortalWrt for N1
-        uses: ophub/flippy-openwrt-actions@main
+        uses: unifreq/openwrt_packit@master
         if: ${{ steps.down.outputs.status }} == 'success' && !cancelled()
         env:
-          OPENWRT_ARMSR: ${{ steps.find_rootfs.outputs.file }}
+          OPENWRT_ARMVIRT: ${{ steps.find_rootfs.outputs.file }}
           PACKAGE_SOC: s905d
-          KERNEL_REPO_URL: unifreq/openwrt_packit
           KERNEL_VERSION_NAME: ${{ inputs.openwrt_kernel }}
-          KERNEL_AUTO_LATEST: false
           WHOAMI: "wukongdaily"
 
       - name: Rename .img.gz file

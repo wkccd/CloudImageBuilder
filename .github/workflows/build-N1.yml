@@ -14,11 +14,11 @@ on:
       rootfs_partsize:
         description: '设置软件包大小 单位(MB) 最大数值10240'
         required: false
-        default: "1024"
+        default: "512"
         type: choice
         options:
+          - "512"
           - "1024"
-          - "2048"
       openwrt_kernel:
         description: "选择构建的内核"
         required: false
@@ -105,7 +105,7 @@ jobs:
           #openwrt_kernel: ${{ inputs.openwrt_kernel }}
           #builder_name: "wukongdaily"
           #auto_kernel: true
-        uses: ophub/flippy-openwrt-actions@main
+        uses: wkccd/flippy-openwrt-actions@dev
         if: ${{ steps.down.outputs.status }} == 'success' && !cancelled()
         env:
           OPENWRT_ARMSR: ${{ steps.find_rootfs.outputs.file }}

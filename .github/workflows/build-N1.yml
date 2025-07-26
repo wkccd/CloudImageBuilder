@@ -22,13 +22,13 @@ on:
       openwrt_kernel:
         description: "选择构建的内核"
         required: false
-        default: "6.1.y_6.12.y"
+        default: "6.1.146"
         type: choice
         options:
           - 5.4.y
           - 5.10.y
           - 5.15.y
-          - 6.1.y
+          - 6.1.146
           - 6.6.y
           - 6.12.y
           - 5.4.y_5.10.y

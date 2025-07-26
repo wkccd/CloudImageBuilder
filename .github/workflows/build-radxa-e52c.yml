@@ -47,7 +47,7 @@ jobs:
           cp n1/99-banner.sh files/etc/uci-defaults/
       
       
-      - name: Building N1 ImmortalWrt
+      - name: Building Radxa ImmortalWrt
         run: |
           profiles="generic"
           include_docker="${{ github.event.inputs.include_docker }}"
@@ -87,14 +87,16 @@ jobs:
           fi
           echo "file=$ROOTFS_FILE" >> $GITHUB_OUTPUT
 
-      - name: Package armsr-armv8 as ImmortalWrt for N1
-        uses: ophub/amlogic-s9xxx-openwrt@main
-        with:
-          openwrt_path: ${{ steps.find_rootfs.outputs.file }}
-          openwrt_board: e52c
-          openwrt_kernel: ${{ inputs.openwrt_kernel }}
-          builder_name: "wukongdaily"
-          auto_kernel: true
+      - name: Package armsr-armv8 as ImmortalWrt
+        uses: ophub/flippy-openwrt-actions@main
+        if: ${{ steps.down.outputs.status }} == 'success' && !cancelled()
+        env:
+          OPENWRT_ARMSR: ${{ steps.find_rootfs.outputs.file }}
+          PACKAGE_SOC: e52c
+          KERNEL_REPO_URL: ophub/kernel
+          KERNEL_VERSION_NAME: ${{ inputs.openwrt_kernel }}
+          KERNEL_AUTO_LATEST: true
+          WHOAMI: "wukongdaily"
 
       - name: Rename .img.gz file
         id: rename

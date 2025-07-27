@@ -5,14 +5,20 @@ on:
       openwrt_kernel:
         description: "选择构建的内核"
         required: false
-        default: "5.10.235"
+        default: "5.10.y"
         type: choice
         options:
-          - 5.10.235
-          - 5.15.189
-          - 6.1.146
-          - 6.6.93
-          - 6.12.39
+          - 5.4.y
+          - 5.10.y
+          - 5.15.y
+          - 6.1.y
+          - 6.6.y
+          - 6.12.y
+          - 5.4.y_5.10.y
+          - 5.15.y_6.1.y
+          - 6.1.y_6.12.y
+          - 6.1.y_6.6.y
+          - 6.6.y_6.12.y
       include_docker:
         description: |
           是否编译 Docker 插件
@@ -109,7 +115,7 @@ jobs:
           OPENWRT_ARMVIRT: immortalwrt-24.10.2-armsr-armv8-generic-rootfs.tar.gz
           PACKAGE_SOC: ${{ inputs.openwrt_soc }}
           KERNEL_VERSION_NAME: ${{ inputs.openwrt_kernel }}
-          KERNEL_AUTO_LATEST: false
+          KERNEL_AUTO_LATEST: true
           WHOAMI: "wukongdaily"
 
       - name: Rename .img.gz file

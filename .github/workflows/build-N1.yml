@@ -109,7 +109,7 @@ jobs:
 
 
       - name: Package armsr-armv8 as ImmortalWrt for Radxa
-        uses: wukongdaily/flippy-openwrt-actions@main
+        uses: ophub/flippy-openwrt-actions@main
         if: ${{ steps.down.outputs.status }} == 'success' && !cancelled()
         env:
           OPENWRT_ARMVIRT: immortalwrt-24.10.2-armsr-armv8-generic-rootfs.tar.gz

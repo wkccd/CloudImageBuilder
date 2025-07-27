@@ -1,4 +1,4 @@
-name: build-N1
+name: build-Radxa
 on:
   workflow_dispatch:
     inputs:
@@ -108,7 +108,7 @@ jobs:
           wget -O immortalwrt-24.10.2-armsr-armv8-generic-rootfs.tar.gz https://github.com/wukongdaily/AutoBuildImmortalWrt/releases/download/phicomm-n1/immortalwrt-24.10.2-armsr-armv8-generic-rootfs.tar.gz
 
 
-      - name: Package armsr-armv8 as ImmortalWrt for N1
+      - name: Package armsr-armv8 as ImmortalWrt for Radxa
         uses: wukongdaily/flippy-openwrt-actions@main
         if: ${{ steps.down.outputs.status }} == 'success' && !cancelled()
         env:

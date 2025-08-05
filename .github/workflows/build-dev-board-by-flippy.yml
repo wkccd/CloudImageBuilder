@@ -144,7 +144,7 @@ jobs:
           echo "file=$ROOTFS_FILE" >> $GITHUB_OUTPUT
 
       - name: Package armsr-armv8 as ImmortalWrt for Radxa
-        uses: wukongdaily/flippy-openwrt-actions@kernel-6.1
+        uses: ophub/flippy-openwrt-actions@main
         if: ${{ steps.down.outputs.status }} == 'success' && !cancelled()
         env:
           OPENWRT_ARMVIRT: ${{ steps.find_rootfs.outputs.file }}
@@ -157,6 +157,8 @@ jobs:
       - name: Rename .img.gz file
         id: rename
         run: |
+          echo "打印PACKAGED_OUTPUTPATH========"
+          ls -lah ${{ env.PACKAGED_OUTPUTPATH }}
           FILE=$(ls ${{ env.PACKAGED_OUTPUTPATH }}/*.img.gz | head -n1)
           echo "Image file is: $FILE"
           FILENAME=$(basename "$FILE")

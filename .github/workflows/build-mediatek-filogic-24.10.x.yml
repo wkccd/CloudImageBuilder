@@ -31,6 +31,7 @@ on:
           - cmcc_rax3000m
           - cmcc_rax3000me
           - cmcc_rax3000m-emmc-ubootmod
+          - cmcc_rax3000m-nand-ubootmod
           - abt_asr3000
           - acelink_ew-7886cax
           - acer_predator-w6
@@ -181,7 +182,7 @@ jobs:
           # 默认平台
           echo "platform=mediatek/filogic" >> $GITHUB_ENV
           # 定义 cmcc_rax3000m 系列机型
-          cmcc_rax3000m_models=("cmcc_rax3000m" "cmcc_rax3000m-emmc-ubootmod" "cmcc_rax3000m-nand-ubootmod")
+          cmcc_rax3000m_models=("cmcc_rax3000m-emmc-ubootmod" "cmcc_rax3000m-nand-ubootmod")
           # 判断机型
           if [ "$profiles" = "glinet_gl-b2200" ]; then
             # 虽然它是高通平台 但由于都是gl机型 故放在一起 找起来方便

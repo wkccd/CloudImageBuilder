@@ -177,7 +177,8 @@ jobs:
 
       - name: Build MTK ImmortalWrt 24.10.2
         run: |
-          profiles="${{ github.event.inputs.profile }}"
+          profile="${{ github.event.inputs.profile }}"
+          echo "Building for profile: $profile"
           include_docker="${{ github.event.inputs.include_docker }}"
           echo "platform=mediatek/filogic" >> $GITHUB_ENV
 
@@ -201,11 +202,8 @@ jobs:
               *)
                   tag=mediatek-filogic-openwrt-24.10.2
                   ;;
-          esac
-   
-          for profile in "${profile_array[@]}"; do
-            echo "Building for profile: $profile"
-            
+            esac
+
             docker run --rm -i \
               --user root \
               -v "${{ github.workspace }}/bin:/home/build/immortalwrt/bin" \
@@ -219,8 +217,8 @@ jobs:
               -e ENABLE_PPPOE=${{ inputs.enable_pppoe }} \
               -e PPPOE_ACCOUNT=${{ inputs.pppoe_account }} \
               -e PPPOE_PASSWORD=${{ inputs.pppoe_password }} \
-              immortalwrt/imagebuilder:$tag /bin/bash /home/build/immortalwrt/build.sh
-          done
+            immortalwrt/imagebuilder:$tag /bin/bash /home/build/immortalwrt/build.sh
+          
 
       - name: Create info
         run: |

@@ -190,7 +190,7 @@ jobs:
             echo "platform=mediatek/filogic" >> $GITHUB_ENV
           elif [ "$profiles" = "cmcc_rax3000m-emmc-ubootmod" ]; then
             # 此机型没有24.10.2 且应该和cmcc_rax3000me应该有区别 故采用支持的23.05.4版本来构建
-            tag=mediatek-filogic-23.05.4
+            tag=mediatek-filogic-openwrt-23.05.4
             echo "platform=mediatek/filogic" >> $GITHUB_ENV
           else
             tag=mediatek-filogic-openwrt-24.10.2

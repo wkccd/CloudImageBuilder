@@ -193,6 +193,7 @@ jobs:
           elif [[ " ${cmcc_rax3000m_models[*]} " =~ " $profiles " ]]; then
             # 此机型没有24.10.2 且应该和cmcc_rax3000me应该有区别 故采用支持的23.05.4版本来构建
             tag=mediatek-filogic-openwrt-23.05.4
+            cp ${{ github.workspace }}/mediatek-filogic/build23.sh ${{ github.workspace }}/mediatek-filogic/build24.sh
           else
             tag=mediatek-filogic-openwrt-24.10.2
           fi

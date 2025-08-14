@@ -15,6 +15,7 @@ on:
           - glinet_gl-xe3000
           - cudy_tr3000-v1
           - cudy_tr3000-v1-ubootmod
+          - cudy_tr3000-256mb-v1
           - jcg_q30-pro
           - jdcloud_re-cp-03
           - xiaomi_mi-router-ax3000t

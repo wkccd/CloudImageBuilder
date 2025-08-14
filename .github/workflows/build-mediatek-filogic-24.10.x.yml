@@ -195,7 +195,8 @@ jobs:
               cmcc_rax3000m-emmc-ubootmod|cmcc_rax3000m-nand-ubootmod)
                   # 此机型没有24.10.2 且应该和cmcc_rax3000me应该有区别 故采用支持的23.05.4版本来构建 且脚本采用build23.sh
                   tag=mediatek-filogic-openwrt-23.05.4
-                  cp "${{ github.workspace }}/mediatek-filogic/build23.sh" "${{ github.workspace }}/mediatek-filogic/build24.sh"
+                  ls ${{ github.workspace }}/mediatek-filogic/
+                  cp ${{ github.workspace }}/mediatek-filogic/build23.sh ${{ github.workspace }}/mediatek-filogic/build24.sh
                   ;;
               *)
                   tag=mediatek-filogic-openwrt-24.10.2

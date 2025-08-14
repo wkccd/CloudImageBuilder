@@ -218,6 +218,8 @@ jobs:
           body_path: ${{ github.workspace }}/mediatek-filogic/info.md
           files: |
             ${{ github.workspace }}/bin/targets/${{ env.platform }}/*.bin
+            ${{ github.workspace }}/bin/targets/${{ env.platform }}/*.itb
+            ${{ github.workspace }}/bin/targets/${{ env.platform }}/*.ubi
           token: ${{ secrets.GITHUB_TOKEN }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

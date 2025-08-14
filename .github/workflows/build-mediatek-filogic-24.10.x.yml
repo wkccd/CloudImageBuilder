@@ -1,3 +1,4 @@
+# 此工作流99% 使用luci 24.10.x 来构建 少部分使用快照版和24.05.4版本来构建
 name: Build MTK Router ImmortalWrt 24.10.x
 
 on:
@@ -11,6 +12,7 @@ on:
           - glinet_gl-mt2500
           - glinet_gl-mt3000
           - glinet_gl-mt6000
+          - glinet_gl-b2200
           - glinet_gl-x3000
           - glinet_gl-xe3000
           - cudy_tr3000-v1
@@ -28,6 +30,7 @@ on:
           - cmcc_a10-ubootmod
           - cmcc_rax3000m
           - cmcc_rax3000me
+          - cmcc_rax3000m-emmc-ubootmod
           - abt_asr3000
           - acelink_ew-7886cax
           - acer_predator-w6
@@ -111,7 +114,7 @@ on:
           - zyxel_ex5601-t0-ubootmod
           - zyxel_ex5700-telenor
           - zyxel_nwa50ax-pro
-        default: glinet_gl-mt6000
+        default: cmcc_rax3000m-emmc-ubootmod
       custom_router_ip:
         description: "请设置路由器的管理地址 格式:192.168.x.1 或 10.x.x.1"
         required: true
@@ -175,9 +178,24 @@ jobs:
         run: |
           profiles="${{ github.event.inputs.profile }}"
           include_docker="${{ github.event.inputs.include_docker }}"
-          tag=mediatek-filogic-openwrt-24.10.2
           echo "platform=mediatek/filogic" >> $GITHUB_ENV
           IFS=',' read -r -a profile_array <<< "$profiles"
+          if [ "$profiles" = "glinet_gl-b2200" ]; then
+            # 虽然它是高通平台 但由于都是gl机型 故放在一起 找起来方便
+            tag=ipq40xx-generic-openwrt-24.10.2
+            echo "platform=ipq40xx/generic" >> $GITHUB_ENV
+          elif [ "$profiles" = "cudy_tr3000-256mb-v1" ]; then
+            # 由于256MB版本tr3000 还没有出正式版24.10.2 故使用快照版本来构建
+            tag=mediatek-filogic-24.10-SNAPSHOT
+            echo "platform=mediatek/filogic" >> $GITHUB_ENV
+          elif [ "$profiles" = "cmcc_rax3000m-emmc-ubootmod" ]; then
+            # 此机型没有24.10.2 且应该和cmcc_rax3000me应该有区别 故采用支持的23.05.4版本来构建
+            tag=mediatek-filogic-23.05.4
+            echo "platform=mediatek/filogic" >> $GITHUB_ENV
+          else
+            tag=mediatek-filogic-openwrt-24.10.2
+            echo "platform=mediatek/filogic" >> $GITHUB_ENV
+          fi
           
           for profile in "${profile_array[@]}"; do
             echo "Building for profile: $profile"

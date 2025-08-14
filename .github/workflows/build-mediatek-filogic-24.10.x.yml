@@ -206,7 +206,7 @@ jobs:
             echo -e "NO docker"
           fi
           custom_router_ip="${{ github.event.inputs.custom_router_ip }}"
-          extra_content_ip="#### 管理地址 custom_router_ip"
+          extra_content_ip="#### 管理地址 $custom_router_ip"
           echo -e "\n $extra_content_ip" >> ${{ github.workspace }}/mediatek-filogic/info.md
           
           

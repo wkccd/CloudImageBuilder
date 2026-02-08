@@ -43,7 +43,7 @@ else
   arch aarch64_generic 10\n\
   arch aarch64_cortex-a53 15' repositories
 fi
-sed -i '/^_check_keys:/,/^fi$/ s/^/##/' Makefile
+
 
 # 输出调试信息
 echo "$(date '+%Y-%m-%d %H:%M:%S') - 开始构建固件..."

@@ -154,6 +154,7 @@ jobs:
           echo "Building for profile: $profile"
           docker run --rm -i \
               --user root \
+              -v "${{ github.workspace }}/Makefile:/home/build/immortalwrt/Makefile" \
               -v "${{ github.workspace }}/bin:/home/build/immortalwrt/bin" \
               -v "${{ github.workspace }}/files:/home/build/immortalwrt/files" \
               -v "${{ github.workspace }}/custom:/home/build/immortalwrt/files/etc/config" \

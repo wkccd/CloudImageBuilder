@@ -1,4 +1,4 @@
-name: build-rockchip-immortalWrt-24.10.x
+name: build-rockchip-immortalWrt-25.12-SNAPSHOT
 
 on:
   workflow_dispatch:
@@ -167,7 +167,7 @@ jobs:
               -e ENABLE_PPPOE=${{ inputs.enable_pppoe }} \
               -e PPPOE_ACCOUNT=${{ inputs.pppoe_account }} \
               -e PPPOE_PASSWORD=${{ inputs.pppoe_password }} \
-          immortalwrt/imagebuilder:rockchip-armv8-openwrt-${luci_version} /bin/bash /home/build/immortalwrt/build.sh
+          immortalwrt/imagebuilder:rockchip-armv8-25.12-SNAPSHOT /bin/bash /home/build/immortalwrt/build.sh
         
     
       - name: Create info

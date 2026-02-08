@@ -92,7 +92,6 @@ export PACKAGE_DIR_ALL:=$(TOPDIR)/packages
 export OPKG_KEYS:=$(TOPDIR)/keys
 OPKG:=$(call opkg,$(TARGET_DIR)) \
 	-f $(TOPDIR)/repositories.conf \
-	--verify-program $(STAGING_DIR_HOST)/bin/usign \
 	--cache $(DL_DIR) \
 	--lists-dir $(LISTS_DIR)
 
@@ -268,7 +267,6 @@ ifeq ($(CONFIG_USE_APK),)
 	$(if $(CONFIG_SIGNATURE_CHECK), \
 		$(if $(ADD_LOCAL_KEY), \
 			OPKG_KEYS=$(TARGET_DIR)/etc/opkg/keys/ \
-			$(STAGING_DIR_HOST)/bin/usign -A add $(BUILD_KEY).pub \
 		) \
 	)
 else
@@ -331,7 +329,6 @@ ifeq ($(CONFIG_USE_APK),)
 		echo Generate local signing keys... >&2; \
 		$(STAGING_DIR_HOST)/bin/usign -G \
 			-s $(BUILD_KEY) -p $(BUILD_KEY).pub -c "Local build key"; \
-		$(STAGING_DIR_HOST)/bin/usign -A $(BUILD_KEY).pub; \
 	fi
 	if [ ! -s $(BUILD_KEY).ucert ]; then \
 		echo Generate local certificate... >&2; \

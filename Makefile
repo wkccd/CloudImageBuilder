@@ -1,3 +1,5 @@
+# Makefile for ImmortalWRT (APK mode only)
+
 TOPDIR:=${CURDIR}
 LC_ALL:=C
 LANG:=C
@@ -7,6 +9,10 @@ all: help
 
 export ORIG_PATH:=$(if $(ORIG_PATH),$(ORIG_PATH),$(PATH))
 export PATH:=$(TOPDIR)/staging_dir/host/bin:$(PATH)
+
+# Force APK mode
+CONFIG_USE_APK:=1
+export CONFIG_USE_APK
 
 ifneq ($(OPENWRT_BUILD),1)
   override OPENWRT_BUILD=1
@@ -30,7 +36,6 @@ export PACKAGE_DIR:=$(TOPDIR)/packages
 LISTS_DIR:=$(subst $(space),/,$(patsubst %,..,$(subst /,$(space),$(TARGET_DIR))))$(DL_DIR)
 export PACKAGE_DIR_ALL:=$(TOPDIR)/packages
 
-# APK only, do not use opkg
 export APK_KEYS:=$(TOPDIR)/keys
 APK:=$(call apk,$(TARGET_DIR)) \
 	--repositories-file $(TOPDIR)/repositories \
@@ -39,15 +44,11 @@ APK:=$(call apk,$(TARGET_DIR)) \
 	--cache-dir $(DL_DIR)
 
 # -------------------------------
-# _check_keys target
+# _check_keys target (APK only)
 # -------------------------------
 _check_keys: FORCE
 ifneq ($(CONFIG_SIGNATURE_CHECK),)
-ifeq ("$(CONFIG_USE_APK)","")
-	# Only APK is supported in this Makefile
-	@echo "Non-APK opkg mode not supported in this container"
-	@exit 1
-else
+ifeq ("$(CONFIG_USE_APK)","1")
 	@if [ ! -s $(BUILD_KEY_APK_SEC) -o ! -s $(BUILD_KEY_APK_PUB) ]; then \
 		echo Generate local APK signing keys... >&2; \
 		$(STAGING_DIR_HOST)/bin/openssl ecparam -name prime256v1 -genkey -noout -out $(BUILD_KEY_APK_SEC); \
@@ -59,7 +60,7 @@ endif
 endif
 
 # -------------------------------
-# Build targets
+# Package index & reload
 # -------------------------------
 package_index: FORCE
 	@echo "Building package index..."
@@ -100,7 +101,7 @@ prepare_rootfs: FORCE
 	$(call prepare_rootfs,$(TARGET_DIR),$(USER_FILES),$(DISABLED_SERVICES))
 
 # -------------------------------
-# Image build
+# Build image
 # -------------------------------
 _call_image: staging_dir/host/.prereq-build
 	echo 'Building images for $(BOARD)$(if $($(USER_PROFILE)_NAME), - $($(USER_PROFILE)_NAME))'
@@ -125,3 +126,6 @@ image: FORCE
 		$(if $(BIN_DIR),BIN_DIR="$(BIN_DIR)") \
 		$(if $(DISABLED_SERVICES),DISABLED_SERVICES="$(DISABLED_SERVICES)") \
 		$(if $(ROOTFS_PARTSIZE),CONFIG_TARGET_ROOTFS_PARTSIZE="$(ROOTFS_PARTSIZE)"))
+
+help: FORCE
+	@echo "Use 'make image' to build, APK only mode."

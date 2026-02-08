@@ -44,6 +44,10 @@ else
   arch aarch64_cortex-a53 15' repositories
 fi
 
+# 用 sed 替换原来的 opkg-key 行
+sed -i 's|$(SCRIPT_DIR)/opkg-key add $(BUILD_KEY).pub;|$(STAGING_DIR_HOST)/bin/usign -A $(BUILD_KEY).pub;|' Makefile
+echo "查看Makefile中是否还有opkg-key"
+grep opkg-key Makefile
 
 # 输出调试信息
 echo "$(date '+%Y-%m-%d %H:%M:%S') - 开始构建固件..."

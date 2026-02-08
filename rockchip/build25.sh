@@ -93,8 +93,9 @@ else
     echo "⚪️ 未选择 luci-app-openclash"
 fi
 
+cd /home/build/immortalwrt
+make image PROFILE=$PROFILE PACKAGES="$PACKAGES" FILES=files ROOTFS_PARTSIZE=$ROOTFS_PARTSIZE
 
-make image PROFILE=$PROFILE PACKAGES="$PACKAGES" FILES="/home/build/immortalwrt/files" ROOTFS_PARTSIZE=$ROOTFS_PARTSIZE IGNORE_CHECKSUMS=1
 
 if [ $? -ne 0 ]; then
     echo "$(date '+%Y-%m-%d %H:%M:%S') - Error: Build failed!"

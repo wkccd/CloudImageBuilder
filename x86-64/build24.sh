@@ -20,55 +20,15 @@ EOF
 echo "cat pppoe-settings"
 cat /home/build/immortalwrt/files/etc/config/pppoe-settings
 
-# 测试
-set -e
-
 OFFICIAL="https://downloads.immortalwrt.org"
 MIRROR="https://mirrors.sjtug.sjtu.edu.cn/immortalwrt"
-TEST_FILE="/releases/24.10.5/targets/rockchip/armv8/packages/Packages.gz"
-
-TEST_URL="$OFFICIAL$TEST_FILE"
-
-echo "========================================"
-echo "Testing official source..."
-echo "URL: $TEST_URL"
-echo "Time: $(date -u)"
-echo "========================================"
-
-# 采集详细信息
-CURL_OUTPUT=$(curl -sS -L \
-  --retry 2 \
-  --connect-timeout 5 \
-  --max-time 20 \
-  -o /dev/null \
-  -w "http_code=%{http_code}\nremote_ip=%{remote_ip}\ntime_total=%{time_total}\nurl_effective=%{url_effective}\n" \
-  "$TEST_URL" 2>&1)
-
-CURL_EXIT=$?
-
-echo "----- curl result -----"
-echo "$CURL_OUTPUT"
-echo "exit_code=$CURL_EXIT"
-echo "-----------------------"
-
-# 判断
-if [ $CURL_EXIT -ne 0 ]; then
-  echo ">>> official failed, switching to mirror"
-  BASE_URL="$MIRROR"
-else
-  echo ">>> official ok"
-  BASE_URL="$OFFICIAL"
-fi
-
+echo ">>> official failed, switching to mirror"
+BASE_URL="$MIRROR"
 echo "Using BASE_URL = $BASE_URL"
-
 echo "========================================"
 echo "Updating repositories.conf"
 echo "========================================"
-
 sed -i "s#https://downloads.immortalwrt.org#${BASE_URL}#g" repositories.conf
-
-echo "===== repositories.conf ====="
 cat repositories.conf
 
 if [ -z "$CUSTOM_PACKAGES" ]; then

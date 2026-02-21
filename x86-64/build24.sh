@@ -28,7 +28,7 @@ echo "Using BASE_URL = $BASE_URL"
 echo "========================================"
 echo "Updating repositories.conf"
 echo "========================================"
-sed -i "s#https://downloads.immortalwrt.org#${BASE_URL}#g" repositories.conf
+sed -i "s#${OFFICIAL}#${BASE_URL}#g" repositories.conf
 cat repositories.conf
 
 if [ -z "$CUSTOM_PACKAGES" ]; then

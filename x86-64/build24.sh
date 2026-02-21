@@ -20,15 +20,20 @@ EOF
 echo "cat pppoe-settings"
 cat /home/build/immortalwrt/files/etc/config/pppoe-settings
 
-# 默认用官方
+# 默认官方
 BASE_URL="https://downloads.immortalwrt.org"
-
-# 如果官方不可达，再 fallback 到南京源
-if ! curl -I --connect-timeout 5 "$BASE_URL/releases/24.10.5/" >/dev/null 2>&1; then
-  BASE_URL="mirrors.sjtug.sjtu.edu.cn/immortalwrt"
+TEST_URL="$BASE_URL/releases/24.10.5/targets/rockchip/armv8/packages/Packages.gz"
+echo "Testing official mirror..."
+if ! curl -fsL --connect-timeout 5 --max-time 15 \
+     -o /dev/null "$TEST_URL"; then
+  echo "Official mirror unavailable, fallback to SJTUG mirror"
+  BASE_URL="https://mirrors.sjtug.sjtu.edu.cn/immortalwrt"
+else
+  echo "Official mirror OK"
 fi
 sed -i "s#https://downloads.immortalwrt.org#${BASE_URL}#g" repositories.conf
-echo "查看当前 repositories.conf ====="
+
+echo "===== repositories.conf ====="
 cat repositories.conf
 
 if [ -z "$CUSTOM_PACKAGES" ]; then

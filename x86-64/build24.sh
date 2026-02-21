@@ -21,7 +21,8 @@ echo "cat pppoe-settings"
 cat /home/build/immortalwrt/files/etc/config/pppoe-settings
 
 OFFICIAL="https://downloads.immortalwrt.org"
-MIRROR="https://mirrors.sjtug.sjtu.edu.cn/immortalwrt"
+#MIRROR="https://mirrors.sjtug.sjtu.edu.cn/immortalwrt"
+MIRROR="https://mirrors.cernet.edu.cn/immortalwrt"
 echo ">>> official failed, switching to mirror"
 BASE_URL="$MIRROR"
 echo "Using BASE_URL = $BASE_URL"

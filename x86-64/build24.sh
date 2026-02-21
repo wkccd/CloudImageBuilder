@@ -20,17 +20,52 @@ EOF
 echo "cat pppoe-settings"
 cat /home/build/immortalwrt/files/etc/config/pppoe-settings
 
-# 默认官方
-BASE_URL="https://downloads.immortalwrt.org"
-TEST_URL="$BASE_URL/releases/24.10.5/targets/rockchip/armv8/packages/Packages.gz"
-echo "Testing official mirror..."
-if ! curl -fsL --connect-timeout 5 --max-time 15 \
-     -o /dev/null "$TEST_URL"; then
-  echo "Official mirror unavailable, fallback to SJTUG mirror"
-  BASE_URL="https://mirrors.sjtug.sjtu.edu.cn/immortalwrt"
+# 测试
+set -e
+
+OFFICIAL="https://downloads.immortalwrt.org"
+MIRROR="https://mirrors.sjtug.sjtu.edu.cn/immortalwrt"
+TEST_FILE="/releases/24.10.5/targets/rockchip/armv8/packages/Packages.gz"
+
+TEST_URL="$OFFICIAL$TEST_FILE"
+
+echo "========================================"
+echo "Testing official source..."
+echo "URL: $TEST_URL"
+echo "Time: $(date -u)"
+echo "========================================"
+
+# 采集详细信息
+CURL_OUTPUT=$(curl -sS -L \
+  --retry 2 \
+  --connect-timeout 5 \
+  --max-time 20 \
+  -o /dev/null \
+  -w "http_code=%{http_code}\nremote_ip=%{remote_ip}\ntime_total=%{time_total}\nurl_effective=%{url_effective}\n" \
+  "$TEST_URL" 2>&1)
+
+CURL_EXIT=$?
+
+echo "----- curl result -----"
+echo "$CURL_OUTPUT"
+echo "exit_code=$CURL_EXIT"
+echo "-----------------------"
+
+# 判断
+if [ $CURL_EXIT -ne 0 ]; then
+  echo ">>> official failed, switching to mirror"
+  BASE_URL="$MIRROR"
 else
-  echo "Official mirror OK"
+  echo ">>> official ok"
+  BASE_URL="$OFFICIAL"
 fi
+
+echo "Using BASE_URL = $BASE_URL"
+
+echo "========================================"
+echo "Updating repositories.conf"
+echo "========================================"
+
 sed -i "s#https://downloads.immortalwrt.org#${BASE_URL}#g" repositories.conf
 
 echo "===== repositories.conf ====="

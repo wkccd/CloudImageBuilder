@@ -20,6 +20,17 @@ EOF
 echo "cat pppoe-settings"
 cat /home/build/immortalwrt/files/etc/config/pppoe-settings
 
+# 默认用官方
+BASE_URL="https://downloads.immortalwrt.org"
+
+# 如果官方不可达，再 fallback 到南京源
+if ! curl -I --connect-timeout 5 "$BASE_URL/releases/24.10.5/" >/dev/null 2>&1; then
+  BASE_URL="mirrors.sjtug.sjtu.edu.cn/immortalwrt"
+fi
+sed -i "s#https://downloads.immortalwrt.org#${BASE_URL}#g" repositories.conf
+echo "查看当前 repositories.conf ====="
+cat repositories.conf
+
 if [ -z "$CUSTOM_PACKAGES" ]; then
   echo "⚪️ 未选择 任何第三方软件包"
 else

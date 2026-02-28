@@ -1,5 +1,6 @@
 #!/bin/bash
 source shell/custom-packages.sh
+source shell/switch_repository.sh
 # 该文件实际为imagebuilder容器内的build.sh
 
 if [ -n "$CUSTOM_PACKAGES" ]; then

@@ -15,6 +15,7 @@ on:
         description: |
           输入 软路由型号 可选值如下：
         options:
+          - radxa_e20c
           - linkease_easepi-r1
           - ariaboard_photonicat
           - armsom_sige3

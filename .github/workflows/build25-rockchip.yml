@@ -9,7 +9,7 @@ on:
         default: "25.12"
         type: choice
         options:
-          - 25.12
+          - 25.12-SNAPSHOT
       profile:
         type: choice
         description: |

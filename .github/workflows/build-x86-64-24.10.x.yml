@@ -1,4 +1,4 @@
-name: build-x86-64-immortalwrt-24.10.x
+name: build-25
 
 on:
   workflow_dispatch:
@@ -6,9 +6,10 @@ on:
       luci_version:
         description: "选择luci版本"
         required: false
-        default: "24.10.5"
+        default: "25.12"
         type: choice
         options:
+          - 25.12
           - 24.10.0
           - 24.10.1
           - 24.10.2
@@ -106,7 +107,7 @@ jobs:
             -e INCLUDE_DOCKER=$include_docker \
             -e ENABLE_PPPOE=${{ inputs.enable_pppoe }} \
             -e PPPOE_ACCOUNT=${{ inputs.pppoe_account }} \
-            -e PPPOE_PASSWORD=${{ inputs.pppoe_password }} \
+            -e PPPOE_PASSWORD=${{ inputs.pppoe_password }} \ 
           immortalwrt/imagebuilder:x86-64-openwrt-${luci_version} /bin/bash /home/build/immortalwrt/build.sh
           
 

@@ -668,7 +668,7 @@ jobs:
           
           
       - name: Upload ImmortalWrt as release assets
-        uses: softprops/action-gh-release@v3
+        uses: softprops/action-gh-release@v3.0.2
         with:
           tag_name: ${{ github.event.inputs.profile }}
           name: ImmortalWrt-Wireless

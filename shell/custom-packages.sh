@@ -8,6 +8,7 @@
 
 # 新增Run安装器 用于快速安装makeself打包的run文件 目前和quickfile的nginx配置冲突 请勿同时集成quickfile
 #CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-app-run"
+CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-proto-ppp xl2tpd ppp ppp-mod-pppol2tp kmod-l2tp kmod-l2tp-ip kmod-pppol2tp"
 # 首页和网络向导
 #CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-i18n-quickstart-zh-cn"
 # 新增非常好用的文件管理器 sbwml/luci-app-quickfile （luci 23版本不支持 勿集成）
